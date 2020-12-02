@@ -5,6 +5,9 @@ import "@nomiclabs/hardhat-waffle";
 import "@nomiclabs/hardhat-etherscan";
 import "@nomiclabs/hardhat-web3";
 
+import { task } from "hardhat/config";
+
+
 
 const INFURA_API_KEY = process.env.INFURA_API_KEY || "";
 const KOVAN_PRIVATE_KEY = process.env.KOVAN_PRIVATE_KEY || "";
@@ -55,18 +58,13 @@ const config: HardhatUserConfig = {
   }
 };
 
+task("accounts", "Prints the list of accounts", async (args, hre) => {
+  const accounts = await hre.ethers.getSigners();
 
-task("testAccount", "log Account")
-  .setAction(async(taskArgs, { ethers }) => {
-    const signers = await ethers.getSigners();
-
-    const account = await signers[0].getAddress();
-    console.log(`account is : `,account.toString());
-
-    const account2 = await signers[1].getAddress();
-    console.log(`account2 is : `,account2.toString());
-
-
+  for (const account of accounts) {
+    console.log(await account.address);
+  }
 });
+
 
 export default config;
