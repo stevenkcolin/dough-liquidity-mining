@@ -177,12 +177,17 @@ describe('RewardEscrow', function() {
 
 				const getVestingTimeForIndex0 = await (await rewardEscrow.connect(rewardContractAccountSigner).getVestingTime(account1,0)).toString();
 				console.log(`getVestingTimeForIndex0 is: ${getVestingTimeForIndex0} `);
-
 				const getVestingTimeForIndex1 = await (await rewardEscrow.connect(rewardContractAccountSigner).getVestingTime(account1,1)).toString();
 				console.log(`getVestingTimeForIndex1 is: ${getVestingTimeForIndex1} `);
-
 				const getVestingTimeForIndex2 = await (await rewardEscrow.connect(rewardContractAccountSigner).getVestingTime(account1,2)).toString();
 				console.log(`getVestingTimeForIndex2 is: ${getVestingTimeForIndex2} `);
+
+				const getVestingQuantity0 = await (await rewardEscrow.connect(rewardContractAccountSigner).getVestingQuantity(account1,0)).toString();
+				console.log(`getVestingQuantity0 is: ${getVestingQuantity0} `);
+				const getVestingQuantity1 = await (await rewardEscrow.connect(rewardContractAccountSigner).getVestingQuantity(account1,1)).toString();
+				console.log(`getVestingQuantity1 is: ${getVestingQuantity1} `);
+				const getVestingQuantity2 = await (await rewardEscrow.connect(rewardContractAccountSigner).getVestingQuantity(account1,2)).toString();
+				console.log(`getVestingQuantity2 is: ${getVestingQuantity2} `);
 
 
 				
