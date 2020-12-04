@@ -57,54 +57,86 @@ describe('RewardEscrow', function() {
             account2Signer
         ] = signers;
 
-        dough = await deployContract(signers[0], DoughMockArtifact) as DoughMock;
+		dough = await deployContract(signers[0], DoughMockArtifact) as DoughMock;
+		console.log(`dough is: ${dough.address}`);
+
 		rewardEscrow = await deployContract(signers[0], RewardEscrowArtifact) as RewardEscrow
+		console.log(`rewardEscrow is: ${rewardEscrow.address}`);
 		
 		rewardEscrow["initialize(address,string,string)"](dough.address, "TEST", "TEST");
 
         dough.mint(owner, parseEther(initial_supply.toString()));
 
         timeTraveler = new TimeTraveler(network.provider);
-
-        await timeTraveler.snapshot();
+		await timeTraveler.snapshot();
+		console.log("----------------------- end of before each -------------------------");
     });
     
     beforeEach(async() => {
         await timeTraveler.revertSnapshot();
     });
 
-	// describe('Constructor & Settings ', async () => {
-	// 	it('should set dough on contructor', async () => {
-	// 		const doughAddress = await rewardEscrow.dough();
-	// 		expect(doughAddress).to.eq(dough.address);
-	// 	});
+	describe('Constructor & Settings ', async () => {
 
-	// 	it('should set owner on contructor', async () => {
-	// 		const ownerAddress = await rewardEscrow.owner();
-	// 		expect(ownerAddress).to.eq(owner);
-	// 	});
+		// it('get rewardEscrow infomation', async () => {
+		// 		const doughAddress = await rewardEscrow.dough();
+		// 		console.log(`doughAddress is: ${doughAddress}`);
 
-	// 	it('should allow owner to set dough', async () => {
-	// 		await rewardEscrow.setDough(constants.AddressZero);
-	// 		const doughAddress = await rewardEscrow.dough();
-	// 		expect(doughAddress, constants.AddressZero);
-	// 	});
-	// });
+		// 		const ownerAddress = await rewardEscrow.owner();
+		// 		console.log(`ownerAddress is: ${ownerAddress}`);
 
-	// describe('Given there are no escrow entries', async () => {
-	// 	it('then numVestingEntries should return 0', async () => {
-	// 		expect(await rewardEscrow.numVestingEntries(account1)).to.eq(0);
-	// 	});
-	// 	it('then getNextVestingEntry should return 0', async () => {
-	// 		const nextVestingEntry = await rewardEscrow.getNextVestingEntry(account1);
-	// 		expect(nextVestingEntry[0]).to.eq(0);
-	// 		expect(nextVestingEntry[1]).to.eq(0);
-	// 	});
-	// 	it('then vest should do nothing and not revert', async () => {
-	// 		await rewardEscrow.connect(account1Signer).vest();
-	// 		expect(await rewardEscrow.totalVestedAccountBalance(account1)).to.eq(0);
-	// 	});
-	// });
+		// 		const totalSupply = await rewardEscrow.totalSupply();
+		// 		console.log(`totalSupply is: ${totalSupply}`);
+				
+		// 	});
+
+		// it('should set dough on contructor', async () => {
+		// 	const doughAddress = await rewardEscrow.dough();
+		// 	console.log(`doughAddress is ${doughAddress}`);
+		// 	expect(doughAddress).to.eq(dough.address);
+		// });
+
+		// it('should set owner on contructor', async () => {
+		// 	const ownerAddress = await rewardEscrow.owner();
+		// 	expect(ownerAddress).to.eq(owner);
+		// });
+
+		// it('should allow owner to set dough', async () => {
+		// 	await rewardEscrow.setDough(constants.AddressZero);
+		// 	const doughAddress = await rewardEscrow.dough();
+		// 	expect(doughAddress, constants.AddressZero);
+		// });
+	});
+
+	describe('Given there are no escrow entries', async () => {
+		// // test for account1
+		// it('then numVestingEntries should return 0', async () => {
+		// 	expect(await rewardEscrow.numVestingEntries(account1)).to.eq(0);
+		// });
+		// it('then getNextVestingEntry should return 0', async () => {
+		// 	const nextVestingEntry = await rewardEscrow.getNextVestingEntry(account1);
+		// 	expect(nextVestingEntry[0]).to.eq(0);
+		// 	expect(nextVestingEntry[1]).to.eq(0);
+		// });
+		// it('then vest should do nothing and not revert', async () => {
+		// 	await rewardEscrow.connect(account1Signer).vest();
+		// 	expect(await rewardEscrow.totalVestedAccountBalance(account1)).to.eq(0);
+		// });
+
+		// // test for account2
+		// it('then numVestingEntries should return 0', async () => {
+		// 	expect(await rewardEscrow.numVestingEntries(account2)).to.eq(0);
+		// });
+		// it('then getNextVestingEntry should return 0', async () => {
+		// 	const nextVestingEntry = await rewardEscrow.getNextVestingEntry(account2);
+		// 	expect(nextVestingEntry[0]).to.eq(0);
+		// 	expect(nextVestingEntry[1]).to.eq(0);
+		// });
+		// it('then vest should do nothing and not revert', async () => {
+		// 	await rewardEscrow.connect(account1Signer).vest();
+		// 	expect(await rewardEscrow.totalVestedAccountBalance(account2)).to.eq(0);
+		// });
+	});
 
 	describe('Functions', async () => {
 		beforeEach(async () => {
@@ -114,20 +146,36 @@ describe('RewardEscrow', function() {
 			expect(isRewardContract).to.be.true;
 		});
 
-		// describe('Vesting Schedule Writes', async () => {
-		// 	it('should not create a vesting entry with a zero amount', async () => {
-		// 		// Transfer of DOUGH to the escrow must occur before creating an entry
-		// 		await dough.transfer(rewardEscrow.address, parseEther("1"));
+		describe('Vesting Schedule Writes', async () => {
+			it('should not create a vesting entry with a zero amount', async () => {
+				// Transfer of DOUGH to the escrow must occur before creating an entry
+				await dough.transfer(rewardEscrow.address, parseEther("1"));
+				console.log(`rewardEscrow address is ${rewardEscrow.address}`);
+				console.log(`rewardContractAccount is: ${rewardContractAccount}`);
+				await expect(rewardEscrow.connect(rewardContractAccount).appendVestingEntry(account1, parseEther('0'))).to.be.revertedWith("Quantity cannot be zero");
 
-		// 		await expect(rewardEscrow.connect(rewardContractAccount).appendVestingEntry(account1, parseEther('0'))).to.be.revertedWith("Quantity cannot be zero");
-		// 	});
+
+
+				
+			});
+
+			it('should create a vesting entry with 1 ethers amount', async () => {
+				// Transfer of DOUGH to the escrow must occur before creating an entry
+				await dough.transfer(rewardEscrow.address, parseEther("1"));
+				console.log(`rewardEscrow address is ${rewardEscrow.address}`);
+				
+				console.log(`rewardContractAccountSigner is: ${await rewardContractAccountSigner.getAddress()}`);
+				await rewardEscrow.connect(rewardContractAccountSigner).appendVestingEntry(account1, parseEther('1'));
+				
+				
+			});
 
 		// 	it('should not create a vesting entry if there is not enough DOUGH in the contracts balance', async () => {
 		// 		// Transfer of DOUGH to the escrow must occur before creating an entry
 		// 		await dough.transfer(rewardEscrow.address, parseEther('1'));
 		// 		await expect(rewardEscrow.connect(rewardContractAccountSigner).appendVestingEntry(account1, parseEther('10'))).to.be.revertedWith(" Must be enough balance in the contract to provide for the vesting entry");
 		// 	});
-		// });
+		});
 
 		// describe('Vesting Schedule Reads ', async () => {
 		// 	beforeEach(async () => {
