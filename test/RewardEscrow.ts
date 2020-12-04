@@ -158,14 +158,36 @@ describe('RewardEscrow', function() {
 
 			it('should create a vesting entry with 1 ethers amount', async () => {
 				// Transfer of DOUGH to the escrow must occur before creating an entry
-				await dough.transfer(rewardEscrow.address, parseEther("1"));
+				await dough.transfer(rewardEscrow.address, parseEther("10000"));
 				console.log(`rewardEscrow address is ${rewardEscrow.address}`);
 				
 				console.log(`rewardContractAccountSigner is: ${await rewardContractAccountSigner.getAddress()}`);
-				await rewardEscrow.connect(rewardContractAccountSigner).appendVestingEntry(account1, parseEther('1'));
+				await rewardEscrow.connect(rewardContractAccountSigner).appendVestingEntry(account1, parseEther('2500'));
+				await timeTraveler.increaseTime(WEEK);
+				await rewardEscrow.connect(rewardContractAccountSigner).appendVestingEntry(account1, parseEther('2500'));
+				await timeTraveler.increaseTime(WEEK*2);
+				await rewardEscrow.connect(rewardContractAccountSigner).appendVestingEntry(account1, parseEther('5000'));
+
+				const numVestingEntries = await (await rewardEscrow.connect(rewardContractAccountSigner).numVestingEntries(account1)).toString();
+				console.log(`numVestingEntries is: ${numVestingEntries} `);
+
+				const totalSupply = await (await rewardEscrow.connect(rewardContractAccountSigner).totalSupply()).toString();
+				console.log(`totalSupply is: ${totalSupply} `);
+
+
+				const getVestingTimeForIndex0 = await (await rewardEscrow.connect(rewardContractAccountSigner).getVestingTime(account1,0)).toString();
+				console.log(`getVestingTimeForIndex0 is: ${getVestingTimeForIndex0} `);
+
+				const getVestingTimeForIndex1 = await (await rewardEscrow.connect(rewardContractAccountSigner).getVestingTime(account1,1)).toString();
+				console.log(`getVestingTimeForIndex1 is: ${getVestingTimeForIndex1} `);
+
+				const getVestingTimeForIndex2 = await (await rewardEscrow.connect(rewardContractAccountSigner).getVestingTime(account1,2)).toString();
+				console.log(`getVestingTimeForIndex2 is: ${getVestingTimeForIndex2} `);
+
+
 				
-				const balanceOfRewardEscrow = await dough.balanceOf(rewardEscrow.address);
-				console.log(`balanceOfRewardEscrow is: ${balanceOfRewardEscrow}`);
+				// const balanceOfRewardEscrow = await dough.balanceOf(rewardEscrow.address);
+				// console.log(`balanceOfRewardEscrow is: ${balanceOfRewardEscrow}`);
 			});
 
 		// 	it('should not create a vesting entry if there is not enough DOUGH in the contracts balance', async () => {
