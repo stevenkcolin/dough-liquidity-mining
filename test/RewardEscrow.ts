@@ -147,17 +147,14 @@ describe('RewardEscrow', function() {
 		});
 
 		describe('Vesting Schedule Writes', async () => {
-			it('should not create a vesting entry with a zero amount', async () => {
-				// Transfer of DOUGH to the escrow must occur before creating an entry
-				await dough.transfer(rewardEscrow.address, parseEther("1"));
-				console.log(`rewardEscrow address is ${rewardEscrow.address}`);
-				console.log(`rewardContractAccount is: ${rewardContractAccount}`);
-				await expect(rewardEscrow.connect(rewardContractAccount).appendVestingEntry(account1, parseEther('0'))).to.be.revertedWith("Quantity cannot be zero");
+			// it('should not create a vesting entry with a zero amount', async () => {
+			// 	// Transfer of DOUGH to the escrow must occur before creating an entry
+			// 	await dough.transfer(rewardEscrow.address, parseEther("1"));
+			// 	console.log(`rewardEscrow address is ${rewardEscrow.address}`);
+			// 	console.log(`rewardContractAccount is: ${rewardContractAccount}`);
+			// 	await expect(rewardEscrow.connect(rewardContractAccount).appendVestingEntry(account1, parseEther('0'))).to.be.revertedWith("Quantity cannot be zero");
 
-
-
-				
-			});
+			// });
 
 			it('should create a vesting entry with 1 ethers amount', async () => {
 				// Transfer of DOUGH to the escrow must occur before creating an entry
@@ -167,7 +164,8 @@ describe('RewardEscrow', function() {
 				console.log(`rewardContractAccountSigner is: ${await rewardContractAccountSigner.getAddress()}`);
 				await rewardEscrow.connect(rewardContractAccountSigner).appendVestingEntry(account1, parseEther('1'));
 				
-				
+				const balanceOfRewardEscrow = await dough.balanceOf(rewardEscrow.address);
+				console.log(`balanceOfRewardEscrow is: ${balanceOfRewardEscrow}`);
 			});
 
 		// 	it('should not create a vesting entry if there is not enough DOUGH in the contracts balance', async () => {
